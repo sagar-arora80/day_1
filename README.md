@@ -1,72 +1,72 @@
-# Getting Started with Create React App
+# Always Day 1
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Always Day 1 is a minimalist web experience focused on **life's insights**, growth mindset, and daily inspiration.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- Clean, distraction-free landing page for life insights and reflections.   
+- Responsive layout optimized for mobile and desktop.   
+- SEO-friendly meta tags and structure (title, description, Open Graph, Twitter cards).   
+- Deployed on Firebase Hosting for fast global delivery.   
 
-### `npm start`
+## Tech Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- React (Create React App) for the frontend.   
+- JavaScript (ES6+).   
+- Firebase Hosting for deployment.   
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## UI Elements
 
-### `npm test`
+The **Always Day 1** interface prioritizes minimalism to focus on life's insights and reflection.   
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Hero section with brand name and tagline  
+- High-contrast, responsive typography  
+- Calm color palette for reflective mood  
+- Structured cards for insights content  
+- Mobile-first responsive layout  
+- Lightweight navigation and footer with social media links (Twitter, LinkedIn, Instagram) [web:7][web:20]
 
-### `npm run build`
+## Project Structure
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+.
+├── public/
+├── src/
+│ ├── App.js
+│ ├── firebase.js
+│ ├── components/
+│ └── Views/
+│ └── HomePage.js
+├── package.json
+├── firebase.json
+└── README.md
+text
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- `src/App.js`: Main application entry component and routing.   
+- `src/Views/HomePage.js`: Core "Always Day 1" landing experience with life insights content.   
+- `src/firebase.js`: Firebase initialization (if you use Firebase services beyond Hosting).   
+- `firebase.json`: Firebase Hosting configuration.   
 
-### `npm run eject`
+## SEO & Content
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+The site is optimized around the theme of **life's insights**, growth mindset, and continuous self-improvement.   
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Example title and description used:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- Title: `Always Day 1 – Life's Insights, Growth Mindset & Personal Development`   
+- Description: `Always Day 1 – Discover life's insights, personal growth strategies, and mindset shifts. Daily inspiration and actionable advice for continuous self-improvement.`   
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+You can customize these in `public/index.html` or via a head-management library in React.   
 
-## Learn More
+## Roadmap
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- Add sections for daily reflections and archived insights.   
+- Integrate a simple CMS or markdown-based content system.   
+- Add basic analytics to understand engagement.   
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Contributing
 
-### Code Splitting
+Contributions, ideas, and suggestions are welcome. Feel free to open an issue or submit a pull request to improve the content, design, or code structure.   
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+This project is licensed under the MIT License. You can adjust this section if you prefer a different license.   
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-# YOURREPO
-# day-1
