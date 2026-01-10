@@ -1,6 +1,6 @@
-# Engineer Portfolio & Admin Dashboard
+# Product Manager - Portfolio & Admin Dashboard
 
-A modern, dynamic personal portfolio website built for software engineers. This project features a high-performance frontend with a "premium dark" aesthetic and a fully functional Admin Dashboard for managing content without touching code.
+A modern, dynamic personal portfolio website built for Product Managers. This project features a high-performance frontend with a "premium dark" aesthetic and a fully functional Admin Dashboard for managing content without touching code.
 
 ## 🚀 Features
 
