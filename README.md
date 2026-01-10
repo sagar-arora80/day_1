@@ -1,72 +1,104 @@
-# Always Day 1
+# Engineer Portfolio & Admin Dashboard
 
-Always Day 1 is a minimalist web experience focused on **life's insights**, growth mindset, and daily inspiration.
+A modern, dynamic personal portfolio website built for software engineers. This project features a high-performance frontend with a "premium dark" aesthetic and a fully functional Admin Dashboard for managing content without touching code.
 
-## Features
+## 🚀 Features
 
-- Clean, distraction-free landing page for life insights and reflections.   
-- Responsive layout optimized for mobile and desktop.   
-- SEO-friendly meta tags and structure (title, description, Open Graph, Twitter cards).   
-- Deployed on Firebase Hosting for fast global delivery.   
+### Public Frontend
+- **Dynamic Content**: All projects, texts, and social links are fetched from Firebase Firestore.
+- **Premium UI**: Glassmorphism, smooth gradients, and micro-animations using **Tailwind CSS** and **Framer Motion**.
+- **Responsive Design**: Mobile-first layout that adapts perfectly to tablets and desktops.
+- **Sections**:
+  - **Hero**: Customizable title, subtext, and "Contact Me" call-to-action.
+  - **Projects**: Categorized displays for Employment, Weekend Experiments, and AI Initiatives.
+  - **Blog**: Showcase technical writing.
 
-## Tech Stack
+### Admin Dashboard (`/admin`)
+- **Secure Authentication**: Firebase Auth protection for admin routes.
+- **Project Management**:
+  - Add, Edit, and Delete portfolio items.
+  - **Image Upload**: Seamless integration with Firebase Storage for project covers.
+- **Site Settings**:
+  - Live preview editing of **Brand Name** (Logo).
+  - Update **Hero Title** & **Introduction**.
+  - customize **Social Media Links** (LinkedIn, Twitter, GitHub).
+  - Manage **Contact Button** text and URL.
 
-- React (Create React App) for the frontend.   
-- JavaScript (ES6+).   
-- Firebase Hosting for deployment.   
+## 🛠️ Tech Stack
 
-## UI Elements
+- **Frontend**: React (Create React App), React Router v6
+- **Styling**: Tailwind CSS, Lucide React (Icons), Framer Motion (Animations)
+- **Backend & Database**: Firebase Firestore (NoSQL)
+- **Storage**: Firebase Storage (Image hosting)
+- **Authentication**: Firebase Auth (Email/Password)
+- **Deployment**: Firebase Hosting
 
-The **Always Day 1** interface prioritizes minimalism to focus on life's insights and reflection.   
+## 📦 Installation & Setup
 
-- Hero section with brand name and tagline  
-- High-contrast, responsive typography  
-- Calm color palette for reflective mood  
-- Structured cards for insights content  
-- Mobile-first responsive layout  
-- Lightweight navigation and footer with social media links (Twitter, LinkedIn, Instagram) [web:7][web:20]
+### 1. Clone the repository
+```bash
+git clone https://github.com/sagar-arora80/day_1.git
+cd day_1
+```
 
-## Project Structure
+### 2. Install Dependencies
+```bash
+npm install
+```
 
+### 3. Firebase Configuration
+1.  Create a project at [Firebase Console](https://console.firebase.google.com/).
+2.  Enable **Authentication** (Sign-in method: Email/Password).
+3.  Create a **Firestore Database** (Start in **production** mode).
+4.  Enable **Storage** (Start in **production** mode).
+5.  Get your web app config object from Project Settings.
 
-.
-├── public/
-├── src/
-│ ├── App.js
-│ ├── firebase.js
-│ ├── components/
-│ └── Views/
-│ └── HomePage.js
-├── package.json
-├── firebase.json
-└── README.md
-text
+### 4. Environment Variables
+Create a `.env` file in the root directory:
+```env
+REACT_APP_API_KEY=your_api_key
+REACT_APP_AUTH_DOMAIN=your_project_id.firebaseapp.com
+REACT_APP_PROJECT_ID=your_project_id
+REACT_APP_STORAGE_BUCKET=your_project_id.firebasestorage.app
+REACT_APP_MESSAGING_SENDER_ID=your_sender_id
+REACT_APP_APP_ID=your_app_id
+```
 
-- `src/App.js`: Main application entry component and routing.   
-- `src/Views/HomePage.js`: Core "Always Day 1" landing experience with life insights content.   
-- `src/firebase.js`: Firebase initialization (if you use Firebase services beyond Hosting).   
-- `firebase.json`: Firebase Hosting configuration.   
+### 5. CORS Configuration (For Image Uploads)
+To allow image uploads from localhost, you must configure CORS for Firebase Storage.
+1.  Install Google Cloud SDK.
+2.  Run: `gsutil cors set cors.json gs://<YOUR_STORAGE_BUCKET_NAME>`
 
-## SEO & Content
+### 6. Run Locally
+```bash
+npm start
+```
+Visit `http://localhost:3000`.
 
-The site is optimized around the theme of **life's insights**, growth mindset, and continuous self-improvement.   
+## 🚢 Deployment
 
-Example title and description used:
+This project is configured for **Firebase Hosting**.
 
-- Title: `Always Day 1 – Life's Insights, Growth Mindset & Personal Development`   
-- Description: `Always Day 1 – Discover life's insights, personal growth strategies, and mindset shifts. Daily inspiration and actionable advice for continuous self-improvement.`   
+1.  Login to Firebase CLI:
+    ```bash
+    firebase login
+    ```
+2.  Build the project:
+    ```bash
+    npm run build
+    ```
+3.  Deploy:
+    ```bash
+    firebase deploy
+    ```
 
-You can customize these in `public/index.html` or via a head-management library in React.   
+## 📝 Usage Guide
 
-## Roadmap
+1.  **First Login**: The first user created in Firebase Auth will need to be manually created via the Firebase Console, or you can temporarily enable a signup route.
+2.  **Access Admin**: Go to `/admin` and login.
+3.  **Populate Content**:
+    - Go to **Site Settings** first to set your Name and Socials.
+    - Go to **Projects** to start adding your portfolio pieces.
 
-- Add sections for daily reflections and archived insights.   
-- Integrate a simple CMS or markdown-based content system.   
-- Add basic analytics to understand engagement.   
-
-## Contributing
-
-Contributions, ideas, and suggestions are welcome. Feel free to open an issue or submit a pull request to improve the content, design, or code structure.   
-
-This project is licensed under the MIT License. You can adjust this section if you prefer a different license.   
-
+## 📄 License
+MIT
