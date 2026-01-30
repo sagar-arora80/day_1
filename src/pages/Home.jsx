@@ -2,54 +2,100 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Section } from '../components/Section';
 import { ProjectCard } from '../components/ProjectCard';
-import { ArrowRight, Cpu, Code, BookOpen } from 'lucide-react';
+import { Bookshelf } from '../components/Interests/Bookshelf';
+import { ActivityBar } from '../components/Interests/ActivityBar';
+import { PhotoGallery } from '../components/Interests/PhotoGallery';
+import { ArrowRight, Github, Linkedin, Mail, Twitter, ChevronDown, Download, BookOpen } from 'lucide-react';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
+import { blogService } from '../services/blogService';
+import { Link } from 'react-router-dom';
 
 export default function Home() {
     const [data, setData] = useState({
         employment: [],
         weekend: [],
         ai: [],
-        blog: []
+        blog: [],
+        books: [],
+        photos: [],
+        activities: []
     });
 
     const [settings, setSettings] = useState({
         heroTitle: '',
         heroSubtitle: '',
         contactBtnText: '',
-        contactBtnUrl: ''
+        contactBtnUrl: '',
+        sectionTitleEmployment: '',
+        sectionTitleAi: '',
+        sectionTitleWeekend: ''
     });
+
+    const [latestBlogs, setLatestBlogs] = useState([]);
+
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
+                // Fetch Settings
+                const settingsRef = doc(db, 'settings', 'global');
+                const settingsSnap = await getDoc(settingsRef);
+                if (settingsSnap.exists()) {
+                    const settingsData = settingsSnap.data();
+                    setSettings(prev => ({ ...prev, ...settingsData }));
+
+                    // Update Title & Favicon
+                    if (settingsData.brandName) document.title = settingsData.brandName;
+                    if (settingsData.profilePhoto) {
+                        const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+                        link.type = 'image/x-icon';
+                        link.rel = 'shortcut icon';
+                        link.href = settingsData.profilePhoto;
+                        document.getElementsByTagName('head')[0].appendChild(link);
+                    }
+                }
+
+                // Fetch Latest Blogs
+                const blogs = await blogService.getPublishedBlogs();
+                setLatestBlogs(blogs.slice(0, 3));
+
                 // Fetch Projects
                 const querySnapshot = await getDocs(collection(db, 'projects'));
-                const items = querySnapshot.docs.map(doc => doc.data());
+                const projectsList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                // Sort by Rank (Ascending)
+                projectsList.sort((a, b) => (a.rank || 0) - (b.rank || 0));
 
                 setData({
-                    employment: items.filter(i => i.category === 'employment'),
-                    weekend: items.filter(i => i.category === 'weekend'),
-                    ai: items.filter(i => i.category === 'ai'),
-                    blog: items.filter(i => i.category === 'blog')
+                    employment: projectsList.filter(p => p.category === 'employment'),
+                    weekend: projectsList.filter(p => p.category === 'weekend'),
+                    ai: projectsList.filter(p => p.category === 'ai'),
+                    books: projectsList.filter(p => p.category === 'book'),
+                    photos: projectsList.filter(p => p.category === 'photo'),
+                    activities: projectsList.filter(p => p.category === 'activity'),
+                    blog: projectsList.filter(p => p.category === 'blog')
                 });
-
-                // Fetch Settings
-                const docRef = doc(db, 'settings', 'global');
-                const docSnap = await getDoc(docRef);
-                if (docSnap.exists()) {
-                    setSettings(prev => ({ ...prev, ...docSnap.data() }));
-                }
             } catch (error) {
                 console.error("Error fetching data:", error);
+            } finally {
+                setLoading(false);
             }
         };
         fetchData();
     }, []);
 
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-slate-950">
+                <div className="w-10 h-10 border-4 border-violet-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        );
+    }
+
     return (
-        <div className="space-y-12 pb-20">
+        <div className="space-y-8 pb-20">
             {/* Hero Section */}
             <section id="about" className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-fuchsia-500/10" />
@@ -63,10 +109,21 @@ export default function Home() {
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.6, ease: "easeOut" }}
                         >
-                            <div className="inline-block px-4 py-1.5 mb-6 rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-300 text-sm font-medium backdrop-blur-sm">
-                                Available for new opportunities
-                            </div>
-                            <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-8 bg-gradient-to-b from-white to-slate-400 bg-clip-text text-transparent whitespace-pre-line">
+                            {settings.profilePhoto && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="w-48 h-48 mx-auto mb-8 rounded-full p-1 bg-gradient-to-br from-violet-500 to-fuchsia-500"
+                                >
+                                    <img
+                                        src={settings.profilePhoto}
+                                        alt="Profile"
+                                        className="w-full h-full object-cover rounded-full border-4 border-slate-950"
+                                    />
+                                </motion.div>
+                            )}
+
+                            <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 bg-gradient-to-b from-white to-slate-400 bg-clip-text text-transparent whitespace-pre-line leading-tight">
                                 {settings.heroTitle}
                             </h1>
                             <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed whitespace-pre-line">
@@ -74,14 +131,14 @@ export default function Home() {
                             </p>
 
                             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                                <a href="#projects" className="px-8 py-3 rounded-full bg-violet-600 text-white font-semibold hover:bg-violet-700 transition-colors flex items-center gap-2">
+                                <a href="#projects" className="px-8 py-3 rounded-full bg-slate-800 text-slate-200 font-semibold hover:bg-slate-700 transition-colors flex items-center gap-2 border border-slate-700">
                                     View Work <ArrowRight size={18} />
                                 </a>
                                 <a
                                     href={settings.contactBtnUrl || "#contact"}
                                     target={settings.contactBtnUrl?.startsWith('http') ? "_blank" : "_self"}
                                     rel={settings.contactBtnUrl?.startsWith('http') ? "noopener noreferrer" : ""}
-                                    className="px-8 py-3 rounded-full bg-slate-800 text-slate-200 font-semibold hover:bg-slate-700 transition-colors border border-slate-700"
+                                    className="px-8 py-3 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-bold hover:opacity-90 transition-opacity shadow-lg shadow-violet-500/25"
                                 >
                                     {settings.contactBtnText || "Contact Me"}
                                 </a>
@@ -93,7 +150,7 @@ export default function Home() {
 
             {/* Employment Projects */}
             {(data.employment.length > 0) ? (
-                <Section title="Major Projects (Employment)" id="projects">
+                <Section title={settings.sectionTitleEmployment || "Major Projects (Employment)"} id="projects">
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {data.employment.map((project, i) => (
                             <ProjectCard
@@ -101,7 +158,7 @@ export default function Home() {
                                 title={project.title}
                                 description={project.description}
                                 tags={project.tags}
-                                date={project.createdAt?.toDate?.().getFullYear() || ''}
+                                date={project.year || project.createdAt?.toDate?.().getFullYear() || ''}
                                 image={project.image}
                                 links={{ live: project.link }}
                             />
@@ -110,7 +167,7 @@ export default function Home() {
                 </Section>
             ) : (
                 /* Fallback static content so the page isn't empty on first load */
-                <Section title="Major Projects (Employment)" id="projects">
+                <Section title={settings.sectionTitleEmployment || "Major Projects (Employment)"} id="projects">
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <ProjectCard
                             title="Enterprise AI Agent Platform"
@@ -128,39 +185,9 @@ export default function Home() {
                 </Section>
             )}
 
-            {/* AI Initiatives - Employment */}
-            {(data.ai.length > 0) ? (
-                <Section title="AI Initiatives at Work">
-                    <div className="grid md:grid-cols-2 gap-8">
-                        {data.ai.map((project, i) => (
-                            <div key={i} className="p-8 rounded-2xl bg-gradient-to-br from-violet-900/20 to-slate-900 border border-violet-500/20">
-                                <Cpu className="text-violet-400 mb-4 h-8 w-8" />
-                                <h3 className="text-xl font-bold text-slate-100 mb-3">{project.title}</h3>
-                                <p className="text-slate-400">{project.description}</p>
-                            </div>
-                        ))}
-                    </div>
-                </Section>
-            ) : (
-                <Section title="AI Initiatives at Work">
-                    <div className="grid md:grid-cols-2 gap-8">
-                        <div className="p-8 rounded-2xl bg-gradient-to-br from-violet-900/20 to-slate-900 border border-violet-500/20">
-                            <Cpu className="text-violet-400 mb-4 h-8 w-8" />
-                            <h3 className="text-xl font-bold text-slate-100 mb-3">Internal Knowledge Graph</h3>
-                            <p className="text-slate-400">Spearheaded the development of a RAG-based knowledge retrieval system for internal documentation, improving developer onboarding speed.</p>
-                        </div>
-                        <div className="p-8 rounded-2xl bg-gradient-to-br from-fuchsia-900/20 to-slate-900 border border-fuchsia-500/20">
-                            <Code className="text-fuchsia-400 mb-4 h-8 w-8" />
-                            <h3 className="text-xl font-bold text-slate-100 mb-3">Code Review Assistant</h3>
-                            <p className="text-slate-400">Built a custom LLM tool integrated into GitHub Actions to provide automated security and performance suggestions on PRs.</p>
-                        </div>
-                    </div>
-                </Section>
-            )}
-
             {/* Weekend Side Projects (AI) */}
             {(data.weekend.length > 0) ? (
-                <Section title="Weekend AI Experiments">
+                <Section title={settings.sectionTitleWeekend || "Weekend AI Experiments"}>
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {data.weekend.map((project, i) => (
                             <ProjectCard
@@ -175,7 +202,7 @@ export default function Home() {
                     </div>
                 </Section>
             ) : (
-                <Section title="Weekend AI Experiments">
+                <Section title={settings.sectionTitleWeekend || "Weekend AI Experiments"}>
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <ProjectCard
                             title="Personal Web Assistant"
@@ -193,20 +220,44 @@ export default function Home() {
                 </Section>
             )}
 
+            {/* Personal Interests (Mind, Body, Soul) */}
+            {(data.books.length > 0 || data.activities.length > 0 || data.photos.length > 0) ? (
+                <Section title="Personal Interests">
+                    <Bookshelf books={data.books} />
+                    <ActivityBar activities={data.activities} />
+                    <PhotoGallery photos={data.photos} />
+                </Section>
+            ) : (
+                /* Fallback Content when empty */
+                <Section title="Personal Interests">
+                    <div className="text-center p-8 border border-slate-800 rounded-xl bg-slate-900/50 text-slate-400">
+                        <div className="mb-2">📚 🏃‍♂️ 🏔️</div>
+                        Add Books, Activities, and Photos in Admin Dashboard to populate this section.
+                    </div>
+                </Section>
+            )}
+
             {/* Blog Section */}
-            {(data.blog.length > 0) && (
+            {(latestBlogs.length > 0) && (
                 <Section title="Engineering Blog" id="blog">
                     <div className="space-y-4">
-                        {data.blog.map((post, i) => (
-                            <div key={i} className="group flex flex-col md:flex-row gap-6 items-start p-6 rounded-xl hover:bg-slate-900/50 border border-transparent hover:border-slate-800 transition-all cursor-pointer" onClick={() => window.open(post.link, '_blank')}>
-                                <div className="flex-shrink-0 text-slate-500 text-sm font-mono mt-1 w-32">Latest</div>
+                        {latestBlogs.map((post) => (
+                            <Link to={`/blogs/${post.slug}`} key={post.id} className="group flex flex-col md:flex-row gap-6 items-start p-6 rounded-xl hover:bg-slate-900/50 border border-transparent hover:border-slate-800 transition-all cursor-pointer">
+                                <div className="flex-shrink-0 text-slate-500 text-sm font-mono mt-1 w-32">
+                                    {post.publishedAt ? new Date(post.publishedAt.toDate()).toLocaleDateString() : 'Draft'}
+                                </div>
                                 <div>
                                     <h3 className="text-xl font-semibold text-slate-200 group-hover:text-violet-400 transition-colors mb-2">{post.title}</h3>
-                                    <p className="text-slate-400 leading-relaxed">{post.description}</p>
+                                    <p className="text-slate-400 leading-relaxed line-clamp-2">{post.subtitle}</p>
                                 </div>
                                 <BookOpen className="ml-auto text-slate-600 group-hover:text-violet-500 opacity-0 group-hover:opacity-100 transition-all" />
-                            </div>
+                            </Link>
                         ))}
+                        <div className="pt-4 text-center">
+                            <Link to="/blogs" className="inline-flex items-center gap-2 text-violet-400 hover:text-white font-medium transition-colors">
+                                Read all articles <ArrowRight size={16} />
+                            </Link>
+                        </div>
                     </div>
                 </Section>
             )}

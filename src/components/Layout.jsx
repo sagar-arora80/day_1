@@ -18,7 +18,21 @@ export function Layout({ children }) {
                 const docRef = doc(db, 'settings', 'global');
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
-                    setSettings(prev => ({ ...prev, ...docSnap.data() }));
+                    const data = docSnap.data();
+                    setSettings(prev => ({ ...prev, ...data }));
+
+                    if (data.profilePhoto) {
+                        const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+                        link.type = 'image/x-icon';
+                        link.rel = 'shortcut icon';
+                        link.href = data.profilePhoto;
+                        document.getElementsByTagName('head')[0].appendChild(link);
+                    }
+
+                    // Update Title
+                    if (data.brandName) {
+                        document.title = data.brandName;
+                    }
                 }
             } catch (error) {
                 console.error("Error fetching settings:", error);
@@ -38,29 +52,26 @@ export function Layout({ children }) {
 
                     <div className="flex items-center gap-3 text-sm font-medium text-slate-400">
                         {settings.linkedin && (
-                            <a href={settings.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-900 border border-slate-700 text-blue-400 hover:text-white hover:border-violet-500 hover:bg-violet-600 transition-all shadow-sm">
+                            <a href={settings.linkedin} target="_blank" rel="noopener noreferrer" className="group relative flex items-center justify-center w-10 h-10 rounded-full bg-slate-900 border border-slate-700 text-blue-400 hover:text-white hover:border-violet-500 hover:bg-violet-600 transition-all shadow-sm">
                                 <Linkedin size={18} />
+                                <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-slate-700">LinkedIn</span>
                             </a>
                         )}
                         {settings.twitter && (
-                            <a href={settings.twitter} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-900 border border-slate-700 text-sky-400 hover:text-white hover:border-violet-500 hover:bg-violet-600 transition-all shadow-sm">
+                            <a href={settings.twitter} target="_blank" rel="noopener noreferrer" className="group relative flex items-center justify-center w-10 h-10 rounded-full bg-slate-900 border border-slate-700 text-sky-400 hover:text-white hover:border-violet-500 hover:bg-violet-600 transition-all shadow-sm">
                                 <Twitter size={18} />
+                                <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-slate-700">Twitter</span>
                             </a>
                         )}
                         {settings.github && (
-                            <a href={settings.github} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-900 border border-slate-700 text-slate-300 hover:text-white hover:border-violet-500 hover:bg-violet-600 transition-all shadow-sm">
+                            <a href={settings.github} target="_blank" rel="noopener noreferrer" className="group relative flex items-center justify-center w-10 h-10 rounded-full bg-slate-900 border border-slate-700 text-slate-300 hover:text-white hover:border-violet-500 hover:bg-violet-600 transition-all shadow-sm">
                                 <Github size={18} />
+                                <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-slate-700">GitHub</span>
                             </a>
                         )}
                         {!settings.linkedin && !settings.twitter && !settings.github && (
                             <span className="text-xs text-slate-600 hidden sm:block">Add socials in Admin</span>
                         )}
-
-                        <div className="h-6 w-px bg-slate-800 mx-2"></div>
-
-                        <NavLink to="/login" className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-900 border border-slate-700 text-slate-400 hover:text-white hover:border-violet-500 hover:bg-violet-600 transition-all shadow-sm" title="Admin Login">
-                            <Shield size={18} />
-                        </NavLink>
                     </div>
                 </div>
             </nav>
@@ -70,7 +81,7 @@ export function Layout({ children }) {
             </main>
 
             <footer className="py-8 text-center text-slate-600 text-sm border-t border-slate-900 mt-20" id="contact">
-                <p>© {new Date().getFullYear()} {settings.brandName}. Built with React & Tailwind.</p>
+                <p>© 2026 Sagar Arora. vibe coded on Antigravity - Built with React & Tailwind.</p>
             </footer>
         </div>
     );
